@@ -1,0 +1,14 @@
+Ankheg
+Monster
+17
+11
+13
+1
+13
+6
+Attack:Bite 3d6+4 +5hit
+Attack:Acid_Spray 3d6+0 DC13
+Attack:
+Attack:
+Attack:
+Attack:

@@ -1,0 +1,14 @@
+Azer
+Monster
+17
+12
+15
+12
+13
+10
+Attack:Warhammer 1d10+3 +5hit
+Attack:
+Attack:
+Attack:
+Attack:
+Attack:

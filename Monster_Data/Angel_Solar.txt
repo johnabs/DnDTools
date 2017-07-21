@@ -1,0 +1,14 @@
+Angel_Solar
+Monster
+26
+22
+26
+25
+25
+30
+Attack:Greatsword 4d6+8 +15hit
+Attack:Slaying_Longbow 8d8+6 +13hit
+Attack:Healing_Touch 8d8+4
+Attack:Searing_Burst 8d6+0
+Attack:
+Attack:

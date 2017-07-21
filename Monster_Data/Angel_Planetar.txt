@@ -1,0 +1,14 @@
+Angel_Planetar
+Monster
+24
+20
+24
+19
+22
+25
+Attack:Greatsword 4d6+7 +12hit
+Attack:Healing_Touch 6d8+3
+Attack:
+Attack:
+Attack:
+Attack:

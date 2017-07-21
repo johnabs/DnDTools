@@ -1,0 +1,14 @@
+Angel_Deva
+Monster
+18
+18
+18
+17
+20
+20
+Attack:Mace 1d6+4 +8hit
+Attack:Healing_Touch 4d8+2
+Attack:
+Attack:
+Attack:
+Attack:

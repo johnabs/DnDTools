@@ -1,0 +1,14 @@
+Flying_Sword
+Monster
+12
+15
+11
+1
+5
+1
+Attack:Longsword 1d8+1 +3hit
+Attack:
+Attack:
+Attack:
+Attack:
+Attack:

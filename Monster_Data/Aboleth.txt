@@ -1,0 +1,14 @@
+Aboleth
+Monster
+21
+9
+15
+18
+15
+18
+Attack:Tentacle 2d6+5
+Attack:Enslave DC14
+Attack:Psychic_Drain 3d6
+Attack:
+Attack:
+Attack:
