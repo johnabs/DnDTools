@@ -1,0 +1,14 @@
+Banshee
+Monster
+1
+14
+10
+12
+11
+17
+Attack:Corrupting_Touch 3d6+2 +4hit
+Attack:Wail 3d6 DC13
+Attack:
+Attack:
+Attack:
+Attack:

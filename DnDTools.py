@@ -1,5 +1,84 @@
 import os
 from appJar import gui
+import random
+
+cwd = os.getcwd()
+#Code for rolling dice, given the number of dice and the type of dice
+def diceRoll(ndice, dtype):
+   total=ndice*random.randrange(1,dtype+1);
+   return(total)
+
+#Code for pulling monster text files to the dropdown menu
+def monsterMenu():
+    menu=[]
+    for files in os.listdir(cwd+"/Monster_Data"):
+        if files.endswith(".txt"):
+          menu.append(files)  
+    return(sorted(menu))
+    
+#Code for pulling monster text files to the dropdown menu
+def playerMenu():
+    menu=[]
+    for files in os.listdir(cwd+"/Player_Data"):
+        if files.endswith(".txt"):
+          menu.append(files)  
+    return(sorted(menu))
+
+#Code for rolling dice, given the number of dice and the type of dice
+def importMonster(monName):
+    monFile=open(os.path.join(cwd+"/Monster_Data", monName+"."+"txt"), "r")
+    monData=[]
+    for line in monFile:
+        if line != "Attack:\n":
+            monData.append(line)
+    return(monData)
+
+
+
+#Allows the DM to select which monsters they want to use for the encounters.
+def selectmonsters():    
+    testlist={}
+    outlist=[]
+    mlist=monsterMenu() 
+    def screen3(button):
+        if button == "Cancel":
+            app3.stop()
+        elif button == "Apply":
+            testlist= app3.getOptionBox("Select your monsters:")
+            for elements in list(testlist.items()):
+                if elements[1]:
+                   outlist.append(elements[0]) 
+            print(sorted(outlist))
+            app3.stop()
+       #     main()
+    app3=gui()
+    app3.addTickOptionBox("Select your monsters:", mlist)         
+    app3.addButtons(["Apply", "Cancel"], screen3)
+    app3.go()
+
+
+#Allows the DM to select which Players are playing.
+def selectplayers():    
+    testlist={}
+    outlist=[]
+    def screen3(button):
+        if button == "Cancel":
+            app3.stop()
+        elif button == "Apply":
+            testlist= app3.getOptionBox("Select your players:")
+            for elements in list(testlist.items()):
+                if elements[1]:
+                   outlist.append(elements[0]) 
+            print(sorted(outlist))
+            app3.stop()
+            main()
+    plist=playerMenu()
+    app3=gui()
+    app3.addTickOptionBox("Select your players:", plist)         
+    app3.addButtons(["Apply", "Cancel"], screen3)
+    app3.go()
+
+
 #Code for inputting player stats.
 def playerInput():
     app2=gui("Please input the character's names and stats here:")
@@ -94,54 +173,34 @@ def monsterInput():
     app2.addButtons(["Next Monster", "Cancel"], screen2)
     app2.go()        
 
-
-cwd = os.getcwd()
-print(cwd)
-app = gui("Setting Up Your Campaign", "400x200")
-app.addLabelEntry("Please enter the number of characters or monsters you want to add:")
-def screen1(button):
-    if button == "Cancel":
-        app.stop()
-    elif button == "Input Player Data": 
-        playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
-        for x in range(1, playerNum+1):
-            playerInput()
-        print(playerNum)
-    elif button == "Input Monster Data": 
-        playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
-        for x in range(1, playerNum+1):
-            monsterInput()
-        print(playerNum)
-    else:
-        app.stop()
-app.addButtons(["Input Player Data", "Input Monster Data", "Select Monsters", "Begin Combat", "Cancel"], screen1)
-app.go()
-
-
-
-def combatOrder():
-    app=gui()
-
-    app.setBg("DarkKhaki")
-    app.setGeometry(280,400)
-
-    app.startPagedWindow("Main Title")
-    app.startPage()
-    app.addLabel("l13", "Label 1")
-    app.stopPage()
-
-    app.startPage()
-    app.addLabel("l21", "Label 2")
-    app.stopPage()
-
-    app.startPage()
-    app.addLabel("l3", "Label 3")
-    app.stopPage()
-
-    app.startPage()
-    app.addLabel("l4", "Label 4")
-    app.stopPage()
-    app.stopPagedWindow()
-
+def main():
+    app = gui("Setting Up Your Campaign", "1920x1080")
+    app.addLabelEntry("Please enter the number of characters or monsters you want to add:")
+    def screen1(button):
+        if button == "Cancel":
+            app.stop()
+        elif button == "Input Player Data": 
+            playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
+            for x in range(1, playerNum+1):
+                playerInput()
+            print(playerNum)
+        elif button == "Input Monster Data": 
+            playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
+            for x in range(1, playerNum+1):
+                monsterInput()
+            print(playerNum)
+        elif button == "Roll Dice": 
+            hitRoll=diceRoll(1,20);
+            print(hitRoll)
+        elif button == "Select Monsters": 
+            app.stop()
+            selectmonsters()
+        elif button == "Select Players": 
+            app.stop()
+            selectplayers()
+        else:
+            print(BUGFIXTIME)
+    app.addButtons(["Input Player Data", "Input Monster Data","Select Players", "Select Monsters", "Begin Combat","Roll Dice", "Cancel"], screen1)
     app.go()
 
+main()
