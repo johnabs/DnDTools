@@ -2,11 +2,15 @@ import os
 from appJar import gui
 import random
 
+selectedPlayers=[]
+selectedMonsters=[]
 cwd = os.getcwd()
 #Code for rolling dice, given the number of dice and the type of dice
 def diceRoll(ndice, dtype):
-   total=ndice*random.randrange(1,dtype+1);
-   return(total)
+    total=0;
+    for i in range(0, ndice):
+        total+=random.randrange(1,dtype+1)
+    return(total)
 
 #Code for pulling monster text files to the dropdown menu
 def monsterMenu():
@@ -16,7 +20,7 @@ def monsterMenu():
           menu.append(files)  
     return(sorted(menu))
     
-#Code for pulling monster text files to the dropdown menu
+#Code for pulling player text files to the dropdown menu
 def playerMenu():
     menu=[]
     for files in os.listdir(cwd+"/Player_Data"):
@@ -33,50 +37,41 @@ def importMonster(monName):
             monData.append(line)
     return(monData)
 
-
-
 #Allows the DM to select which monsters they want to use for the encounters.
 def selectmonsters():    
+    app.showSubWindow("Select Your Monsters:")
+
+def screen3(button):
+    global selectedMonsters
     testlist={}
     outlist=[]
-    mlist=monsterMenu() 
-    def screen3(button):
-        if button == "Cancel":
-            app3.stop()
-        elif button == "Apply":
-            testlist= app3.getOptionBox("Select your monsters:")
-            for elements in list(testlist.items()):
-                if elements[1]:
-                   outlist.append(elements[0]) 
-            print(sorted(outlist))
-            app3.stop()
-       #     main()
-    app3=gui()
-    app3.addTickOptionBox("Select your monsters:", mlist)         
-    app3.addButtons(["Apply", "Cancel"], screen3)
-    app3.go()
-
-
+    if button == "Finish":
+        app.hideSubWindow("Select Your Monsters:")
+    elif button == "Apply":
+        testlist= app.getOptionBox("Select Your Monsters:")
+        for elements in list(testlist.items()):
+            if elements[1]:
+               outlist.append(elements[0]) 
+        selectedMonsters=(sorted(outlist))
+        app.hideSubWindow("Select Your Monsters:")
+        
 #Allows the DM to select which Players are playing.
 def selectplayers():    
+    app.showSubWindow("Select Your Players:")
+
+def screen4(button):
+    global selectedPlayers
     testlist={}
     outlist=[]
-    def screen3(button):
-        if button == "Cancel":
-            app3.stop()
-        elif button == "Apply":
-            testlist= app3.getOptionBox("Select your players:")
-            for elements in list(testlist.items()):
-                if elements[1]:
-                   outlist.append(elements[0]) 
-            print(sorted(outlist))
-            app3.stop()
-            main()
-    plist=playerMenu()
-    app3=gui()
-    app3.addTickOptionBox("Select your players:", plist)         
-    app3.addButtons(["Apply", "Cancel"], screen3)
-    app3.go()
+    if button == "Finish":
+        app.hideSubWindow("Select Your Players:")
+    elif button == "Select":
+        testlist= app.getOptionBox("Select Your Players:")
+        for elements in list(testlist.items()):
+            if elements[1]:
+               outlist.append(elements[0]) 
+        selectedPlayers=(sorted(outlist))
+        app.hideSubWindow("Select Your Players:")
 
 
 #Code for inputting player stats.
@@ -173,34 +168,43 @@ def monsterInput():
     app2.addButtons(["Next Monster", "Cancel"], screen2)
     app2.go()        
 
-def main():
-    app = gui("Setting Up Your Campaign", "1920x1080")
-    app.addLabelEntry("Please enter the number of characters or monsters you want to add:")
-    def screen1(button):
-        if button == "Cancel":
-            app.stop()
-        elif button == "Input Player Data": 
-            playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
-            for x in range(1, playerNum+1):
-                playerInput()
-            print(playerNum)
-        elif button == "Input Monster Data": 
-            playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
-            for x in range(1, playerNum+1):
-                monsterInput()
-            print(playerNum)
-        elif button == "Roll Dice": 
-            hitRoll=diceRoll(1,20);
-            print(hitRoll)
-        elif button == "Select Monsters": 
-            app.stop()
-            selectmonsters()
-        elif button == "Select Players": 
-            app.stop()
-            selectplayers()
-        else:
-            print(BUGFIXTIME)
-    app.addButtons(["Input Player Data", "Input Monster Data","Select Players", "Select Monsters", "Begin Combat","Roll Dice", "Cancel"], screen1)
-    app.go()
+mlist=monsterMenu() 
+plist=playerMenu() 
+app = gui("Setting Up Your Campaign", "1920x1080")
+app.addLabelEntry("Please enter the number of characters or monsters you want to add:")
+def screen1(button):
+    if button == "Cancel":
+        app.stop()
+    elif button == "Input Player Data": 
+        playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
+        for x in range(1, playerNum+1):
+            playerInput()
+        print(playerNum)
+    elif button == "Input Monster Data": 
+        playerNum = int(app.getEntry("Please enter the number of characters or monsters you want to add:"))
+        for x in range(1, playerNum+1):
+            monsterInput()
+        print(playerNum)
+    elif button == "Roll Dice": 
+        hitRoll=diceRoll(2,20);
+        print(hitRoll)
+    elif button == "Select Monsters": 
+        selectmonsters()
+    elif button == "Select Players": 
+        selectplayers()
+    else:
+        print(BUGFIXTIME)
 
-main()
+app.startSubWindow("Select Your Monsters:")
+app.addTickOptionBox("Select Your Monsters:", mlist)         
+app.addButtons(["Apply", "Finish"], screen3)
+app.stopSubWindow()
+
+app.startSubWindow("Select Your Players:")
+app.addTickOptionBox("Select Your Players:", plist)         
+app.addButtons(["Select"], screen4)
+app.stopSubWindow()
+
+app.addButtons(["Input Player Data", "Input Monster Data","Select Players", "Select Monsters", "Begin Combat","Roll Dice", "Cancel"], screen1)
+app.go()
+
