@@ -1,10 +1,13 @@
 import os
+from operator import itemgetter
+import math
 from appJar import gui
 import random
 
 selectedPlayers=[]
 selectedMonsters=[]
 cwd = os.getcwd()
+combatlist=[]
 #Code for rolling dice, given the number of dice and the type of dice
 def diceRoll(ndice, dtype):
     total=0;
@@ -28,13 +31,31 @@ def playerMenu():
           menu.append(files)  
     return(sorted(menu))
 
+def monsterGen():
+    for i in range(0,len(selectedMonsters)):
+        for j in range(0, int(selectedMonsters[i][1])):
+            combatlist.append(importMonster(selectedMonsters[i][0]))
+    print(combatlist)
+     
+
+
+
+
 #Code for rolling dice, given the number of dice and the type of dice
 def importMonster(monName):
-    monFile=open(os.path.join(cwd+"/Monster_Data", monName+"."+"txt"), "r")
+    monFile=open(os.path.join(cwd+"/Monster_Data", monName), "r")
     monData=[]
     for line in monFile:
         if line != "Attack:\n":
-            monData.append(line)
+            monData.append(line.strip("\n"))
+    for i in range(2,8):
+        monData[i]=int(monData[i])+random.randrange(-5,6)
+        if monData[i]>10:
+            monData[i]=int(math.floor((monData[i]-10)/2))
+        elif monData[i]<10:
+            monData[i]=int(math.ceil(10-(monData[i])/2))
+        elif monData[i]==10:
+            monData[i]=0;
     return(monData)
 
 #Allows the DM to select which monsters they want to use for the encounters.
@@ -47,14 +68,13 @@ def screen3(button):
     outlist=[]
     if button == "Finish":
         app.hideSubWindow("Select Your Monsters:")
-    elif button == "Apply":
-        testlist= app.getOptionBox("Select Your Monsters:")
-        for elements in list(testlist.items()):
-            if elements[1]:
-               outlist.append(elements[0]) 
-        selectedMonsters=(sorted(outlist))
-        app.hideSubWindow("Select Your Monsters:")
-        
+    elif button == "Add To Monster List":
+        selectedMonsters.append([app.getOptionBox("Select Your Monsters:"),app.getEntry("Number of Monsters")]) 
+        print(selectedMonsters)
+    elif button == "Clear Monsters":
+        selectedMonsters=[]
+        combatlist=[]
+
 #Allows the DM to select which Players are playing.
 def selectplayers():    
     app.showSubWindow("Select Your Players:")
@@ -123,18 +143,38 @@ def monsterInput():
     app2.addLabelEntry("Intelligence")
     app2.addLabelEntry("Wisdom")
     app2.addLabelEntry("Charisma")
-    app2.addLabelEntry("Attack1")
-    app2.addLabelEntry("Attack2")
-    app2.addLabelEntry("Attack3")
-    app2.addLabelEntry("Attack4")
-    app2.addLabelEntry("Attack5")
-    app2.addLabelEntry("Attack6")
+    app2.addLabelEntry("Attack1 Name")
+    app2.addLabelEntry("Attack1 Dice Number", 9, 1)
+    app2.addLabelEntry("Attack1 Dice Type", 9, 2)
+    app2.addLabelEntry("Attack1 Bonus Stats", 9, 3)
+    app2.addLabelEntry("Attack2 Name")
+    app2.addLabelEntry("Attack2 Dice Number", 10, 1)
+    app2.addLabelEntry("Attack2 Dice Type", 10, 2)
+    app2.addLabelEntry("Attack2 Bonus Stats", 10, 3)
+    app2.addLabelEntry("Attack3 Name")
+    app2.addLabelEntry("Attack3 Dice Number", 11, 1)
+    app2.addLabelEntry("Attack3 Dice Type", 11, 2)
+    app2.addLabelEntry("Attack3 Bonus Stats", 11, 3)
+    app2.addLabelEntry("Attack4 Name")
+    app2.addLabelEntry("Attack4 Dice Number", 12, 1)
+    app2.addLabelEntry("Attack4 Dice Type", 12, 2)
+    app2.addLabelEntry("Attack4 Bonus Stats", 12, 3)
+    app2.addLabelEntry("Attack5 Name")
+    app2.addLabelEntry("Attack5 Dice Number", 13, 1)
+    app2.addLabelEntry("Attack5 Dice Type", 13, 2)
+    app2.addLabelEntry("Attack5 Bonus Stats", 13, 3)
+    app2.addLabelEntry("Attack6 Name")
+    app2.addLabelEntry("Attack6 Dice Number", 14, 1)
+    app2.addLabelEntry("Attack6 Dice Type", 14, 2)
+    app2.addLabelEntry("Attack6 Bonus Stats", 14, 3)
     app2.setFocus("Name") 
     def screen2(button):
         if button == "Cancel":
             app2.stop()
         elif button == "Next Monster":
             name=app2.getEntry("Name")
+            ac=app2.getEntry("Armor Class")
+            HP=app2.getEntry("HP")
             stre=app2.getEntry("Strength")
             dex=app2.getEntry("Dexterity")
             con=app2.getEntry("Constitution")
@@ -190,14 +230,18 @@ def screen1(button):
         print(hitRoll)
     elif button == "Select Monsters": 
         selectmonsters()
+        print(selectedMonsters)
     elif button == "Select Players": 
         selectplayers()
+    elif button == "Begin Combat":
+        monsterGen()
     else:
         print(BUGFIXTIME)
 
 app.startSubWindow("Select Your Monsters:")
-app.addTickOptionBox("Select Your Monsters:", mlist)         
-app.addButtons(["Apply", "Finish"], screen3)
+app.addOptionBox("Select Your Monsters:", mlist)         
+app.addLabelEntry("Number of Monsters")
+app.addButtons(["Add To Monster List", "Clear Monsters", "Finish"], screen3)
 app.stopSubWindow()
 
 app.startSubWindow("Select Your Players:")
